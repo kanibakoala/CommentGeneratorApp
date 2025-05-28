@@ -32,13 +32,28 @@ jobs:
           ${{ runner.os }}-gradle-
           
     - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
+      run: |
+        if [ -f "gradlew" ]; then
+          chmod +x gradlew
+        else
+          echo "gradlew not found, using gradle wrapper from system"
+        fi
       
     - name: Build with Gradle
-      run: ./gradlew assembleDebug
+      run: |
+        if [ -f "gradlew" ]; then
+          ./gradlew assembleDebug
+        else
+          gradle assembleDebug
+        fi
       
     - name: Build Release APK
-      run: ./gradlew assembleRelease
+      run: |
+        if [ -f "gradlew" ]; then
+          ./gradlew assembleRelease
+        else
+          gradle assembleRelease
+        fi
       
     - name: Upload Debug APK
       uses: actions/upload-artifact@v4
